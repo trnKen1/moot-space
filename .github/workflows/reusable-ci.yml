@@ -14,6 +14,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Full history so Turborepo can diff against a base ref once
+          # --filter=...[<base>] affected-package filtering is introduced
+          # (not used yet: with a single workspace package there's nothing
+          # to gain, and getting the base ref right differs between push
+          # and pull_request events).
+          fetch-depth: 0
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -37,6 +44,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -54,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-files
-          path: dist/
+          path: apps/web/dist/
 
   # This job deploys the application to a staging environment
   deploy_staging:
