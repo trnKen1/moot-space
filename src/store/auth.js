@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', {
   }),
   
   actions: {
-    async login(email, password) {
+    async login(email, _password) {
       this.isLoading = true
       this.error = null
       
@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('moot_user', JSON.stringify(mockUser))
         localStorage.setItem('moot_user_token', 'mock-token-xyz')
         return true
-      } catch (err) {
+      } catch (_err) {
         this.error = 'Invalid email or password'
         return false
       } finally {
@@ -52,7 +52,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-    async signup(name, handle, email, password) {
+    async signup(name, handle, email, _password) {
       this.isLoading = true
       this.error = null
       
@@ -77,7 +77,7 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('moot_user', JSON.stringify(mockUser))
         localStorage.setItem('moot_user_token', 'mock-token-xyz')
         return true
-      } catch (err) {
+      } catch (_err) {
         this.error = 'Signup failed, please try again.'
         return false
       } finally {
