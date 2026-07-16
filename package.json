@@ -2,28 +2,19 @@
   "name": "moot-space",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "packageManager": "npm@11.12.1",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test:unit": "vitest",
-    "lint": "eslint . --fix"
-  },
-  "dependencies": {
-    "pinia": "^4.0.2",
-    "vue": "^3.5.39",
-    "vue-router": "^4.6.4"
+    "dev": "turbo run dev --filter=@moot-space/web",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test:unit": "turbo run test:unit"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@vitejs/plugin-vue": "^6.0.7",
-    "@vue/test-utils": "^2.4.11",
-    "eslint": "^10.7.0",
-    "eslint-plugin-vue": "^10.9.2",
-    "globals": "^17.7.0",
-    "jsdom": "^29.1.1",
-    "vite": "^8.1.1",
-    "vitest": "^4.1.10"
+    "turbo": "^2.5.0"
   }
 }
