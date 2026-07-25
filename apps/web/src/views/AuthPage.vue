@@ -9,7 +9,7 @@
       <div class="auth-header">
         <div class="logo-symbol">M</div>
         <h2>moot.space</h2>
-        <p class="subtitle">Join the developer town square</p>
+        <p class="subtitle">Your moots await in the creative space.</p>
       </div>
 
       <!-- Tab Switcher -->
@@ -59,11 +59,6 @@
           <span v-if="isLoading" class="spinner"></span>
           <span v-else>Continue</span>
         </button>
-        
-        <div class="demo-creds">
-          <strong>Demo credentials:</strong>
-          <span>Any email / password works (defaults: kenji@moot.space / demo)</span>
-        </div>
       </form>
 
       <!-- Register Form -->
@@ -134,8 +129,8 @@ export default {
     const currentTab = ref('login')
     
     // Login ref fields
-    const loginEmail = ref('kenji@moot.space')
-    const loginPassword = ref('password')
+    const loginEmail = ref('')
+    const loginPassword = ref('')
     
     // Signup ref fields
     const signupName = ref('')
@@ -418,20 +413,4 @@ export default {
   to { transform: rotate(360deg); }
 }
 
-.demo-creds {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px dashed rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-sm);
-  font-size: 0.78rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  color: var(--text-muted);
-}
-
-.demo-creds strong {
-  color: var(--text-secondary);
-}
 </style>

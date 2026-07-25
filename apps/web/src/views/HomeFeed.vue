@@ -4,7 +4,7 @@
     <main class="feed-main">
       <header class="feed-header">
         <h1>Feed</h1>
-        <div class="trending-badge glass">✨ Dev Square</div>
+        <div class="trending-badge glass">Dev Square</div>
       </header>
 
       <!-- Composer Card -->

@@ -1,15 +1,27 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import Sidebar from './Sidebar.vue'
-import { useAuthStore } from '../../store/auth'
 import { useChatStore } from '../../store/chat'
 
-const push = vi.fn()
+const { push, mockAuth } = vi.hoisted(() => ({
+  push: vi.fn(),
+  mockAuth: {
+    getSession: vi.fn(),
+    signOut: vi.fn(),
+    onAuthStateChange: vi.fn()
+  }
+}))
 
 vi.mock('vue-router', () => ({
   useRouter: () => ({ push })
 }))
+
+vi.mock('../../lib/supabase', () => ({
+  supabase: { auth: mockAuth }
+}))
+
+const { useAuthStore } = await import('../../store/auth')
 
 function mountSidebar() {
   return mount(Sidebar, {
@@ -20,10 +32,26 @@ function mountSidebar() {
 }
 
 describe('Sidebar', () => {
-  beforeEach(() => {
-    localStorage.clear()
+  beforeEach(async () => {
+    vi.clearAllMocks()
     setActivePinia(createPinia())
     push.mockClear()
+
+    mockAuth.getSession.mockResolvedValue({
+      data: {
+        session: {
+          user: {
+            id: 'usr_1',
+            email: 'kenji@moot.space',
+            user_metadata: { name: 'Kenji Thorne', handle: 'kenji_thorne' }
+          }
+        }
+      }
+    })
+    mockAuth.onAuthStateChange.mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } })
+    mockAuth.signOut.mockResolvedValue({ error: null })
+
+    await useAuthStore().init()
   })
 
   it('renders the current user name and handle', () => {
@@ -53,6 +81,7 @@ describe('Sidebar', () => {
     const wrapper = mountSidebar()
 
     await wrapper.find('.logout-btn').trigger('click')
+    await flushPromises()
 
     expect(authStore.isAuthenticated).toBe(false)
     expect(push).toHaveBeenCalledWith({ name: 'Auth' })
