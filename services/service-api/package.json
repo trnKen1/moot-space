@@ -1,0 +1,11 @@
+{
+  "name": "@moot-space/service-api",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": ".venv\\Scripts\\python.exe manage.py runserver",
+    "build": ".venv\\Scripts\\python.exe manage.py collectstatic --noinput",
+    "lint": ".venv\\Scripts\\python.exe -m ruff check .",
+    "test:unit": ".venv\\Scripts\\python.exe manage.py test"
+  }
+}

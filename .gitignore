@@ -16,6 +16,18 @@ dist-ssr
 # Turborepo
 .turbo
 
+# Python (services/service-api)
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache
+.coverage
+db.sqlite3
+# Windows Python install manager (pymanager) cache — created when a bare `python`/`py`
+# invocation resolves to it instead of a venv
+Python/_cache/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

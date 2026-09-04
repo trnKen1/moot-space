@@ -1,12 +1,13 @@
 # Architecture
 
-## Current state (as of 2026-07-27)
+## Current state (as of 2026-07-27, services/ updated 2026-09-04)
 moot-space is a Turborepo monorepo using npm workspaces across three namespaces:
 
 ```
 apps/          # deployable applications
   web/          # @moot-space/web — Vue 3 + Vite frontend
-services/      # backend services (empty — see below)
+services/      # backend services
+  service-api/  # @moot-space/service-api — Django, scaffold only, see below
 packages/      # shared code (empty — no second consumer yet)
 ```
 
@@ -21,9 +22,20 @@ packages/      # shared code (empty — no second consumer yet)
   a placeholder, not wired to Supabase yet.
 
 ### services/ and packages/
-Both are scaffolded but empty. Convention (from their READMEs):
+`packages/` is scaffolded but empty. `services/` has one workspace so far:
+
+- **`service-api`** (`@moot-space/service-api`) — Django 6.1, added 2026-09-04. Scaffold only:
+  `config/` (settings/urls/wsgi), one placeholder app `service_api/core`, SQLite locally. Not
+  wired to `apps/web` or Supabase yet — no real endpoints, no shared schema/auth decision made.
+  Stood up ahead of the usual trigger, as a deliberate Django-learning project rather than a
+  product necessity; see the 2026-09-04 entry in `decisions.md` for the full reasoning and its
+  relationship to the superseded standalone `moot-club` repo. Runs via Turborepo like any other
+  workspace (`npx turbo run dev --filter=@moot-space/service-api`), not containerized.
+
+Convention for anything added here going forward (from the READMEs):
 - A service becomes real when something needs logic Supabase's client-side API can't express
-  (e.g. custom matching/ranking, webhooks, background jobs). Named `@moot-space/service-<name>`.
+  (e.g. custom matching/ranking, webhooks, background jobs) — `service-api` is the deliberate
+  exception to this, not a new default. Named `@moot-space/service-<name>`.
 - Shared code only moves into `packages/` once two consumers need it — don't pre-split.
 
 ## Open architectural questions
@@ -38,6 +50,7 @@ Track unresolved ones here until they're answered, then move the answer + ration
       (invite-only signup, extra profile fields, etc.)?
 
 ## Related
-- Design research this app's UI draws from: `01 Social App Design` in the `obsd-claude`
-  Obsidian vault (Orbit prototypes + behavioral analysis).
-- `docs/plan.md` for what's being built next, `docs/decisions.md` for why past choices were made.
+- Design research this app's UI draws from, plus the current plan/todo: `20 Software/Social App
+  Design` in the `obsd-claude` Obsidian vault (Orbit prototypes + behavioral analysis, and
+  `plan.md`/`todo.md` as of the 2026-09-04 docs split — see `CLAUDE.md`).
+- `docs/decisions.md` (this repo) for why past choices were made.

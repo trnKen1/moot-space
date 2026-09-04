@@ -27,3 +27,73 @@ with a custom `service-auth`/`service-chat`.
 **Why:** Avoids building backend services before it's clear Supabase's client-side API + Realtime
 + RLS can't handle the need. Revisit per the open questions in `architecture.md` as real features
 replace the mocked `store/chat.js` data.
+
+## 2026-08-16 — Stay on Vue for `apps/web`; don't rebuild in React for future mobile
+**Decision:** Keep `apps/web` on Vue 3 rather than rewriting it in React in anticipation of a
+future mobile app. When mobile is actually scoped, evaluate Capacitor (wraps the existing Vue web
+app for iOS/Android) against React Native as a separate decision at that time.
+**Why:** React Native's code-sharing benefit is with a React Native app, not a React *web* app —
+mobile UI would be written separately either way, so switching the web framework doesn't buy
+mobile reuse. Meanwhile Phase 1 work (routes, auth guard, Supabase Auth session handling, chat UI
+— see `plan.md`) is real, working code, not scaffolding; rewriting it for a Phase 3 need that
+isn't even scoped yet is a large cost for a speculative benefit.
+
+## 2026-09-02 — Trigger for standing up the first backend service
+**Decision:** `apps/web` keeps calling Supabase directly. We create the first
+`services/service-*` workspace only when one of these is *observed* — not on a schedule, and
+not on general "will this scale" concern:
+  1. A query the client API can't express efficiently (e.g. feed ranking needing a per-request
+     join+score across tables that can't be a Postgres view or an RPC).
+  2. Work that must run with no client present — scheduled jobs, notification fan-out, digests.
+  3. A credential that cannot ship to the browser (a third-party key needing server-side use).
+  4. An authorization rule RLS genuinely cannot express.
+  5. A measured performance floor — p95 feed load past <N>ms at realistic row counts, traced to
+     the client query pattern rather than to a missing index.
+
+  <N> is deliberately unset: pick a number you would actually be unhappy with. A threshold
+  quietly rigged never to fire is worse than no threshold, because it feels like rigor.
+
+**Why:** Without a written condition, "should we move to a real backend?" gets relitigated
+whenever something is annoying, and gets answered on mood rather than evidence. Supabase is
+Postgres: if a trigger fires, a Django (or any) service points at the same database and the
+schema survives — only client-side query code is rewritten. So the cost of waiting is bounded,
+while the cost of moving early is the whole Phase 1 timeline.
+
+Corollary: the `moot-club` Django repo is this decision made ahead of its trigger. It should not
+remain a separate repository — when a trigger fires, that work lands here as
+`services/service-api` per the `services/README.md` convention, so it inherits this repo's
+history, docs and CI.
+**Supersedes:** clarifies 2026-07-27 — Supabase as initial backend (does not reverse it).
+
+## 2026-09-04 — Fold moot-club in as services/service-api, ahead of the trigger
+**Decision:** Stood up `services/service-api` (Django) now, rather than waiting for one of the
+five triggers above to fire. `apps/web` still talks to Supabase directly for everything real —
+`service-api` currently has no endpoints wired to the product, just the scaffold (`config/`
+settings, one placeholder app `service_api/core`, a `package.json` so Turborepo treats it like
+any other workspace).
+
+**Why:** None of the five product triggers had fired — this isn't a reversal of the 2026-09-02
+decision on product-necessity grounds. The actual reason is a separate, legitimate one: wanting
+to learn Django hands-on, against a real (if not-yet-product-critical) codebase, rather than a
+disposable tutorial project. Treating "want to learn X" as its own explicit trigger, distinct
+from the five product triggers, keeps that reasoning honest instead of dressing a learning
+project up as a scaling necessity. The corollary in the 2026-09-02 entry already said this work
+belongs here as `services/service-api` once it exists — this entry is that happening, on a
+different trigger than the one originally anticipated.
+
+**Consequence:** the standalone `moot-club` repo is superseded by `services/service-api` and is
+not being maintained further — it was intentionally left as-is (not deleted or archived) rather
+than folded via git history, since the actual code was re-scaffolded fresh here rather than
+migrated file-for-file.
+
+**Naming note:** Django's app-grouping folder here is `service_api/`, not `apps/` — this repo's
+top-level `apps/` already means "deployable frontends," so nesting another `apps/` one level
+down inside `service-api/` would read as a collision in docs/greps/chat out of context.
+
+**Environment note:** `service-api`'s `package.json` scripts (`dev`/`build`/`lint`/`test:unit`)
+call `.venv\Scripts\python.exe` directly rather than a bare `python`. On this Windows setup, a
+bare `python` inside an npm-spawned subshell resolves to the App-execution-alias/`pymanager`
+stub, not the workspace's own venv — pointing at the venv's interpreter directly sidesteps that
+without needing the venv activated in every task invocation.
+**Supersedes:** fulfills the corollary in 2026-09-02 — Trigger for standing up the first backend
+service (does not reverse the five-trigger policy for any *other* future service).
