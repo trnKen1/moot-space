@@ -44,6 +44,8 @@ Split between the repo and Obsidian (as of 2026-09-04):
   so anyone who clones it has them, not just this machine. Read both at the start of a session
   touching more than a small fix. Log any non-obvious architectural choice in `docs/decisions.md`
   when you make it, not after.
+- `docs/architecture-audit.md` also stays in this repo — a dated (2026-08-14) architecture/risk
+  pass, not living memory like the two above. Useful background, not something to keep updated.
 - `plan.md` and `todo.md` **moved to the Obsidian vault** — day-to-day planning, in
   `20 Software/Social App Design/` in the `obsd-claude` vault, alongside this project's design
   research. Keep their checkboxes in sync with what actually got done; they're persistent memory
