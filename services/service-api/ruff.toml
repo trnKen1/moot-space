@@ -1,0 +1,5 @@
+# Without this, ruff assumes py39 rather than the version this service runs on.
+target-version = "py314"
+
+# Django generates these; they're not ours to keep tidy.
+extend-exclude = ["**/migrations/"]

@@ -97,3 +97,36 @@ stub, not the workspace's own venv — pointing at the venv's interpreter direct
 without needing the venv activated in every task invocation.
 **Supersedes:** fulfills the corollary in 2026-09-02 — Trigger for standing up the first backend
 service (does not reverse the five-trigger policy for any *other* future service).
+
+## 2026-10-05 — service-api scripts go through a Node launcher; CI splits by toolchain
+**Decision:** `service-api`'s `package.json` scripts no longer name an interpreter
+(`.venv\Scripts\python.exe`). They call `node scripts/py.mjs <args>`, which prefers the workspace
+venv for the current platform (`.venv/Scripts/python.exe` on Windows, `.venv/bin/python`
+elsewhere) and falls back to `PATH` when no venv exists. `ruff` is pinned in a new
+`requirements-dev.txt` (which includes `requirements.txt`) rather than in `requirements.txt`
+itself. CI (`reusable-ci.yml`) now has two jobs: the existing Node matrix, filtered with
+`--filter='!@moot-space/service-api'`, and a new `python` job that installs Python +
+`requirements-dev.txt` and runs `lint`/`test:unit` for that one workspace.
+
+**Why:** The 2026-09-04 environment note below was right about the cause (a bare `python` in an
+npm-spawned shell on this Windows setup resolves to the App-execution-alias/`pymanager` stub) but
+its fix only held on this machine. A literal `.venv\Scripts\python.exe` is unrunnable on Linux —
+the shell strips the backslashes — and `.venv/` is gitignored, so adding the workspace to
+Turborepo's task graph meant `npm run lint` could never pass on a runner. That, plus a
+`package-lock.json` that was never regenerated when the workspace was added (`npm ci` refuses the
+mismatch), is why CI on `main` was red from 2026-09-04 to today. A launcher keeps the venv-first
+behavior the note wanted while making one script work on both platforms; CI drives it through
+Turborepo rather than calling `ruff`/`manage.py` directly, so the `PATH` fallback is actually
+exercised and a Windows-only regression can't pass unnoticed.
+
+**Why two jobs rather than one:** installing a Python toolchain into each leg of a Node version
+matrix tests nothing about Python (the matrix axis is irrelevant to it) and slows both legs. Split
+jobs also mean a Django failure reads as a Django failure in the run summary.
+
+**Consequence:** a fresh clone needs `python -m venv .venv` + `pip install -r requirements-dev.txt`
+in `services/service-api` before `npm run lint` passes at the repo root. The four
+`service_api/core` placeholder files (`admin.py`, `models.py`, `views.py`, `tests.py`) lost their
+unused `startapp` imports, which ruff's default F401 rule flags; the imports come back when
+something is actually registered.
+**Supersedes:** the Environment note in 2026-09-04 — Fold moot-club in as services/service-api
+(the diagnosis stands, the `.venv\Scripts\python.exe` remedy does not).

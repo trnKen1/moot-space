@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": ".venv\\Scripts\\python.exe manage.py runserver",
-    "build": ".venv\\Scripts\\python.exe manage.py collectstatic --noinput",
-    "lint": ".venv\\Scripts\\python.exe -m ruff check .",
-    "test:unit": ".venv\\Scripts\\python.exe manage.py test"
+    "dev": "node scripts/py.mjs manage.py runserver",
+    "build": "node scripts/py.mjs manage.py collectstatic --noinput",
+    "lint": "node scripts/py.mjs -m ruff check .",
+    "test:unit": "node scripts/py.mjs manage.py test"
   }
 }

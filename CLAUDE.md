@@ -14,10 +14,14 @@ A social/chat app. Turborepo monorepo, npm workspaces: `apps/*`, `services/*`, `
     Django-learning project. It has no real endpoints yet; `apps/web` still talks to Supabase
     directly for everything. Django's app-grouping folder inside it is named `service_api/`, not
     `apps/` — the top-level `apps/` here already means "deployable frontends," so reusing it one
-    level down would read as a collision. Its `package.json` scripts call
-    `.venv\Scripts\python.exe` directly rather than relying on `python` being on `PATH` — Windows
-    resolves a bare `python` inside an npm-spawned shell to the App-execution-alias/`pymanager`
-    stub, not the venv.
+    level down would read as a collision. Its `package.json` scripts go through
+    `node scripts/py.mjs` rather than naming an interpreter — the launcher prefers the workspace
+    venv (`.venv/Scripts/python.exe` on Windows, `.venv/bin/python` elsewhere) and falls back to
+    `PATH` when there's no venv, as on CI. Don't "simplify" those scripts back to a bare `python`:
+    Windows resolves it inside an npm-spawned shell to the App-execution-alias/`pymanager` stub,
+    not the venv. Dev setup is `python -m venv .venv` in the service dir, then
+    `pip install -r requirements-dev.txt` (that file pulls in `requirements.txt` and adds `ruff`,
+    which `npm run lint` needs).
   - Everything else here should still only get stood up when something needs logic Supabase
     can't express — `service-api` is the deliberate exception, not a new default.
 - `packages/*` — shared code used by 2+ apps/services, named `@moot-space/<name>`. Don't
@@ -29,6 +33,11 @@ A social/chat app. Turborepo monorepo, npm workspaces: `apps/*`, `services/*`, `
 - `npx turbo run dev --filter=@moot-space/service-api` — runs the Django dev server standalone
   (not wired into the default `npm run dev` yet — add `--filter` or a combined script when you
   want both running together)
+- CI (`.github/workflows/main-ci.yml` → `reusable-ci.yml`) splits by toolchain: a Node matrix job
+  (22.x/24.x) runs `npx turbo run lint|test:unit --filter='!@moot-space/service-api'`, and a
+  separate Python job sets up Python + `requirements-dev.txt` and runs those same tasks for
+  `service-api`. It calls `npx turbo` directly rather than the root npm scripts because the root
+  `test:unit` script ends in `--`, so anything npm appends goes to vitest instead of turbo.
 
 ## Conventions
 - Vue 3 `<script setup>` SFCs, no Options API for new components.

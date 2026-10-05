@@ -1,10 +1,10 @@
-name: Reusable Vue App CI/CD
+name: Reusable CI
 
 on:
   workflow_call:
 
 jobs:
-  # This job runs linting and unit tests on every push/PR
+  # Lint + unit-test the JS/TS workspaces on every push/PR.
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # Full history so Turborepo can diff against a base ref once
           # --filter=...[<base>] affected-package filtering is introduced
@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -31,8 +31,47 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Turborepo is called directly rather than through the root npm scripts:
+      # the root `test:unit` script ends in `--`, so anything npm appends is
+      # forwarded to vitest instead of turbo, leaving nowhere to put --filter.
+      # The negated filter means "every workspace except the Python one", so a
+      # second JS workspace is picked up here without editing this file.
       - name: Run linter
-        run: npm run lint
+        run: npx turbo run lint --filter='!@moot-space/service-api'
 
       - name: Run unit tests
-        run: npm run test:unit -- --run # The --run flag makes vitest exit after running
+        run: npx turbo run test:unit --filter='!@moot-space/service-api' -- --run # The --run flag makes vitest exit after running
+
+  # services/service-api is Django, so it needs a Python toolchain rather than
+  # the Node matrix above. It still runs through Turborepo and the workspace's
+  # own npm scripts, which exercises their PATH fallback — the venv they prefer
+  # locally doesn't exist on the runner.
+  python:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+          cache: 'pip'
+          cache-dependency-path: services/service-api/requirements-dev.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci # for Turborepo itself
+
+      - name: Install Python dependencies
+        run: pip install -r requirements-dev.txt
+        working-directory: services/service-api
+
+      - name: Run linter and unit tests
+        run: npx turbo run lint test:unit --filter=@moot-space/service-api

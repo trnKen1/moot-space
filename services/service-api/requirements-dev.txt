@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Tooling only — kept out of requirements.txt so that file stays the runtime set.
+ruff==0.16.10
