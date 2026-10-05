@@ -38,3 +38,6 @@ Python/_cache/
 *.njsproj
 *.sln
 *.sw?
+
+# VibeWise learner notes (local only)
+.vibe-wise/
