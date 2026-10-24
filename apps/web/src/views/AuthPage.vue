@@ -14,7 +14,7 @@
             v-for="tab in tabs"
             :id="`tab-${tab.id}`"
             :key="tab.id"
-            :ref="el => { tabEls[tab.id] = el }"
+            :ref="setEl(tab.id)"
             type="button"
             role="tab"
             class="ms-tab"
@@ -141,8 +141,9 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRovingTabs } from '../composables/useRovingTabs'
 import { useAuthStore } from '../store/auth'
 import { useUiStore } from '../store/ui'
 
@@ -154,16 +155,7 @@ const tabs = [
   { id: 'login', label: 'Sign in' },
   { id: 'signup', label: 'Register' }
 ]
-const currentTab = ref('login')
-const tabEls = {}
-
-// Arrow keys select the neighbouring tab and move focus to it, wrapping at the ends.
-const moveTab = async (step) => {
-  const index = tabs.findIndex(t => t.id === currentTab.value)
-  currentTab.value = tabs[(index + step + tabs.length) % tabs.length].id
-  await nextTick()
-  tabEls[currentTab.value]?.focus()
-}
+const { current: currentTab, setEl, move: moveTab } = useRovingTabs(tabs.map(t => t.id))
 
 // Login ref fields
 const loginEmail = ref('')
