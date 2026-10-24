@@ -301,10 +301,12 @@
 .ms-chat { display: grid; grid-template-columns: 280px 1fr; min-height: 420px; overflow: hidden; }
 .ms-threads { display: flex; flex-direction: column; border-right: 1px solid var(--line); }
 .ms-threads__head { padding: var(--space-6) var(--space-4) var(--space-3); }
-.ms-threads__head h2 { margin: 0; font: 600 24px/30px var(--font-display); }
-.ms-thread { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); margin: 0 var(--space-2); border-radius: var(--radius-md); cursor: pointer; }
+.ms-threads__head h1, .ms-threads__head h2 { margin: 0; font: 600 24px/30px var(--font-display); }
+.ms-thread { display: flex; align-items: center; gap: var(--space-3); width: calc(100% - 2 * var(--space-2)); padding: var(--space-3) var(--space-4); margin: 0 var(--space-2); border: 0; border-radius: var(--radius-md); background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .ms-thread:hover { background: var(--surface-sunken); }
-.ms-thread[aria-selected="true"] { background: var(--brand-soft); }
+.ms-thread[aria-selected="true"], .ms-thread[aria-current="true"] { background: var(--brand-soft); }
+.ms-thread__name { font: 600 15px/22px var(--font-sans); }
+.ms-thread__preview { font: 400 13px/18px var(--font-sans); color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ms-thread__meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); }
 .ms-thread__top { display: flex; justify-content: space-between; gap: var(--space-2); }
 .ms-chat__main { display: flex; flex-direction: column; min-width: 0; }
