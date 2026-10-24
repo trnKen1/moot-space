@@ -130,3 +130,26 @@ unused `startapp` imports, which ruff's default F401 rule flags; the imports com
 something is actually registered.
 **Supersedes:** the Environment note in 2026-09-04 — Fold moot-club in as services/service-api
 (the diagnosis stands, the `.venv\Scripts\python.exe` remedy does not).
+
+## 2026-10-24 — moot.space design system: tokens + global `ms-*` classes
+**Decision:** `apps/web` adopts the moot.space design system (nature-green identity, prism light
+model). Its source of truth is the Design System artifact
+(https://claude.ai/artifact/ANJ5xn1qUzkpfmwHYJtsr9): `project/tokens.json` is compiled into
+`apps/web/src/styles/tokens.css`, and its component stylesheet is copied to
+`apps/web/src/styles/moot.css`. Components use those global `ms-*` classes; per-component scoped
+CSS is kept only for layout glue (grids, breakpoints, sticky positioning). Theme is
+`<html data-theme="daylight|canopy">`, set from `prefers-color-scheme` by `src/lib/theme.js`.
+Surface finishes are `data-finish` attributes with one default per region (satin app, frosted
+sidebar, prism auth card and profile header, matte chat, dappled empty states), overridable only
+by a dev-only switcher (`components/dev/FinishSwitcher.vue`, loaded under `import.meta.env.DEV`).
+
+**Why:** The previous UI kept ~1,500 lines of near-duplicate scoped CSS across four views on a
+handful of hard-coded variables, so re-theming meant editing every view. Global classes + tokens
+mean a colour, radius or finish change is one edit, and the same markup is documented and
+previewed in the design system. Copying files rather than creating `packages/design-system`
+follows the 2026-07-27 rule: there is one consumer. Tokens are copied, not fetched at build time,
+so builds don't depend on the artifact being reachable.
+
+**Consequence:** a token or `ms-*` change is made in the design system first, then copied into
+`src/styles/` (both files say so in their header). The views were migrated behind a temporary
+alias block that mapped the old variable names onto the new tokens, removed once no view used it.

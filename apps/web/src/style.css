@@ -57,36 +57,6 @@ button, input, textarea {
   white-space: nowrap;
 }
 
-/* TEMPORARY: old variable names pointed at the new tokens so views that haven't been
-   migrated yet keep rendering. Delete this block once no view uses them. */
-:root {
-  --bg-base: var(--ground);
-  --bg-surface: var(--surface);
-  --border-color: var(--line);
-  --text-primary: var(--ink);
-  --text-secondary: var(--ink-muted);
-  --text-muted: var(--ink-subtle);
-  --primary: var(--brand);
-  --primary-hover: var(--brand-strong);
-  --primary-glow: var(--brand-soft);
-  --secondary: var(--fern-500);
-  --accent: var(--brand);
-  --error: var(--danger);
-  --shadow-lg: var(--shadow-soft);
-  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.glass {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-soft);
-}
-
-.glass-glow {
-  box-shadow: var(--shadow-lifted);
-}
-/* END TEMPORARY */
-
 /* Page layout */
 .layout-container {
   display: grid;

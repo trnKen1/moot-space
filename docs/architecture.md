@@ -24,6 +24,13 @@ packages/      # shared code (empty — no second consumer yet)
   with a `setTimeout` — this is a placeholder, not wired to Supabase yet. `HomeFeed.vue` similarly
   keeps its post list as a component-local mock `ref`, not yet in a store.
   See `docs/architecture-audit.md` for a full architecture/risk pass.
+- Styling (as of 2026-10-24): the moot.space design system. `src/styles/tokens.css` (colours per
+  theme, spacing, radii, shadows, light-diffusion values) and `src/styles/moot.css` (global `ms-*`
+  component classes and the prism light model) are copied from the Design System artifact — see
+  the 2026-10-24 entry in `decisions.md`. Theme follows the OS via `src/lib/theme.js`
+  (`data-theme`); surface finish is a `data-finish` attribute per region, read through
+  `store/ui.js`. Shared UI pieces: `components/feed/PostCard.vue`,
+  `components/common/EmptyState.vue`, and `composables/useRovingTabs.js` (keyboard tabs).
 
 ### services/ and packages/
 `packages/` is scaffolded but empty. `services/` has one workspace so far:

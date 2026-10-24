@@ -41,6 +41,10 @@ A social/chat app. Turborepo monorepo, npm workspaces: `apps/*`, `services/*`, `
 
 ## Conventions
 - Vue 3 `<script setup>` SFCs, no Options API for new components.
+- Styling: use the global `ms-*` classes from `apps/web/src/styles/moot.css` and tokens from
+  `src/styles/tokens.css` (`var(--brand)`, `var(--space-4)`…); scoped CSS only for layout glue.
+  Never hard-code colours. Token/class changes start in the Design System artifact
+  (https://claude.ai/artifact/ANJ5xn1qUzkpfmwHYJtsr9), then get copied in — see `docs/decisions.md`.
 - State lives in Pinia stores (`apps/web/src/store/*.js`), not component-local state, once it's
   shared across views.
 - Store data is currently mocked in-memory (see `store/chat.js`) — when wiring a feature to
