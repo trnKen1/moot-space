@@ -2,7 +2,7 @@
   <!-- Main layout for authenticated pages -->
   <div v-if="showSidebar" class="layout-container">
     <Sidebar />
-    <main class="main-content">
+    <main class="main-content" :data-finish="ui.finishFor('satin')">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />
@@ -10,38 +10,36 @@
       </router-view>
     </main>
   </div>
-  
+
   <!-- Standalone layout for Auth pages -->
-  <div v-else>
+  <div v-else :data-finish="ui.finishFor('satin')">
     <router-view v-slot="{ Component }">
       <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
   </div>
+
+  <DevFinishSwitcher v-if="DevFinishSwitcher" />
 </template>
 
-<script>
-import { computed } from 'vue'
+<script setup>
+import { computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import Sidebar from './components/navigation/Sidebar.vue'
+import { useUiStore } from './store/ui'
 
-export default {
-  name: 'App',
-  components: {
-    Sidebar
-  },
-  setup() {
-    const route = useRoute()
-    
-    // Do not show sidebar on the Auth page
-    const showSidebar = computed(() => route.name !== 'Auth' && route.name !== undefined)
+// import.meta.env.DEV is replaced with `false` in production builds, so this branch
+// and the switcher's code are dropped from the bundle entirely.
+const DevFinishSwitcher = import.meta.env.DEV
+  ? defineAsyncComponent(() => import('./components/dev/FinishSwitcher.vue'))
+  : null
 
-    return {
-      showSidebar
-    }
-  }
-}
+const route = useRoute()
+const ui = useUiStore()
+
+// Do not show sidebar on the Auth page
+const showSidebar = computed(() => route.name !== 'Auth' && route.name !== undefined)
 </script>
 
 <style>

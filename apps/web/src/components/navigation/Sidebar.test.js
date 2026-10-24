@@ -57,14 +57,14 @@ describe('Sidebar', () => {
   it('renders the current user name and handle', () => {
     const wrapper = mountSidebar()
 
-    expect(wrapper.find('.user-info .name').text()).toBe('Kenji Thorne')
-    expect(wrapper.find('.user-info .handle').text()).toBe('@kenji_thorne')
+    expect(wrapper.find('.ms-user-card__name').text()).toBe('Kenji Thorne')
+    expect(wrapper.find('.ms-user-card__handle').text()).toBe('@kenji_thorne')
   })
 
   it('shows the unread badge when a conversation is unread', () => {
     const wrapper = mountSidebar()
 
-    expect(wrapper.find('.badge').exists()).toBe(true)
+    expect(wrapper.find('.ms-dot').exists()).toBe(true)
   })
 
   it('hides the unread badge when nothing is unread', () => {
@@ -73,14 +73,14 @@ describe('Sidebar', () => {
 
     const wrapper = mountSidebar()
 
-    expect(wrapper.find('.badge').exists()).toBe(false)
+    expect(wrapper.find('.ms-dot').exists()).toBe(false)
   })
 
   it('logs out and navigates to Auth when the logout button is clicked', async () => {
     const authStore = useAuthStore()
     const wrapper = mountSidebar()
 
-    await wrapper.find('.logout-btn').trigger('click')
+    await wrapper.find('button[aria-label="Log out"]').trigger('click')
     await flushPromises()
 
     expect(authStore.isAuthenticated).toBe(false)
