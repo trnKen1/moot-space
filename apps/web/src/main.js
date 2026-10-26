@@ -4,6 +4,9 @@ import './style.css'
 import App from './App.vue'
 import router from './router'
 import { useAuthStore } from './store/auth'
+import { syncTheme } from './lib/theme'
+
+syncTheme()
 
 const app = createApp(App)
 const pinia = createPinia()

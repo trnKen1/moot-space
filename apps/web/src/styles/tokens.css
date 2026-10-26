@@ -1,0 +1,137 @@
+/*
+ * moot.space design tokens — generated from the design system's tokens.json.
+ * Source of truth: https://claude.ai/artifact/ANJ5xn1qUzkpfmwHYJtsr9 (project/tokens.json).
+ * Change values there, then regenerate this file; don't hand-edit it.
+ * Themes: <html data-theme="daylight|canopy"> (set by src/lib/theme.js).
+ */
+:root, [data-theme="daylight"] {
+  --fern-50: #eef6ee;
+  --fern-100: #d6ebd6;
+  --fern-200: #b0d6b2;
+  --fern-300: #82bb88;
+  --fern-400: #589e62;
+  --fern-500: #3d8249;
+  --fern-600: #2e6a3a;
+  --fern-700: #24542f;
+  --fern-800: #1b3f25;
+  --fern-900: #12291a;
+  --fern-950: #0b1a11;
+  --stone-50: #f5f7f2;
+  --stone-200: #d3dacd;
+  --stone-400: #8a9683;
+  --stone-600: #4d5847;
+  --stone-800: #262e24;
+  --pollen: #e3b740;
+  --on-pollen: #2a2208;
+  --prism-sun: #f2c94c;
+  --prism-leaf: #8fd16a;
+  --prism-dew: #4fc1a6;
+  --prism-sky: #6db8d8;
+  --prism-bloom: #e58a9b;
+  --highlight: #ffffff;
+  --ground: #f3f5ef;
+  --surface: #fbfcf8;
+  --surface-raised: #ffffff;
+  --surface-sunken: #e9eee4;
+  --line: #d3dacd;
+  --line-strong: #7e8a77;
+  --ink: #18211a;
+  --ink-muted: #4a5747;
+  --ink-subtle: #5f6b5a;
+  --brand: #2e6a3a;
+  --brand-strong: #24542f;
+  --on-brand: #ffffff;
+  --brand-soft: #d6ebd6;
+  --on-brand-soft: #1b3f25;
+  --focus: #13708a;
+  --danger: #a63c2a;
+  --danger-soft: #f8e4de;
+  --shadow-soft: 0 1px 2px rgba(24, 33, 26, 0.06), 0 8px 24px -12px rgba(24, 33, 26, 0.18);
+  --shadow-lifted: 0 2px 4px rgba(24, 33, 26, 0.08), 0 18px 40px -16px rgba(24, 33, 26, 0.28);
+}
+[data-theme="canopy"] {
+  --fern-50: #eef6ee;
+  --fern-100: #d6ebd6;
+  --fern-200: #b0d6b2;
+  --fern-300: #82bb88;
+  --fern-400: #589e62;
+  --fern-500: #3d8249;
+  --fern-600: #2e6a3a;
+  --fern-700: #24542f;
+  --fern-800: #1b3f25;
+  --fern-900: #12291a;
+  --fern-950: #0b1a11;
+  --stone-50: #f5f7f2;
+  --stone-200: #d3dacd;
+  --stone-400: #8a9683;
+  --stone-600: #4d5847;
+  --stone-800: #262e24;
+  --pollen: #f0c75a;
+  --on-pollen: #2a2208;
+  --prism-sun: #f7d56b;
+  --prism-leaf: #a6e283;
+  --prism-dew: #6fd6bc;
+  --prism-sky: #8ccbe6;
+  --prism-bloom: #efa2b0;
+  --highlight: #e6fbe980;
+  --ground: #0c1510;
+  --surface: #132019;
+  --surface-raised: #1a2a20;
+  --surface-sunken: #09110c;
+  --line: #2a3b2f;
+  --line-strong: #647d6a;
+  --ink: #eef4ec;
+  --ink-muted: #a9b8a6;
+  --ink-subtle: #8d9e89;
+  --brand: #7cc58a;
+  --brand-strong: #9ad6a5;
+  --on-brand: #0b1a11;
+  --brand-soft: #1d3a26;
+  --on-brand-soft: #cfe9d2;
+  --focus: #6fd3e6;
+  --danger: #f39a85;
+  --danger-soft: #3a1c16;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px -12px rgba(0, 0, 0, 0.6);
+  --shadow-lifted: 0 2px 4px rgba(0, 0, 0, 0.45), 0 20px 44px -16px rgba(0, 0, 0, 0.7);
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+  --sheen-matte: 0;
+  --rim-matte: 0.14;
+  --halo-matte: 0.10;
+  --spread-matte: 32px;
+  --grain-matte: 0.12;
+  --sheen-satin: 0.22;
+  --rim-satin: 0.4;
+  --halo-satin: 0.14;
+  --spread-satin: 18px;
+  --sheen-glossy: 0.6;
+  --rim-glossy: 0.9;
+  --halo-glossy: 0.22;
+  --spread-glossy: 8px;
+  --sheen-frosted: 0.2;
+  --rim-frosted: 0.5;
+  --halo-frosted: 0.12;
+  --spread-frosted: 14px;
+  --frost-blur: 18px;
+  --sheen-prism: 0.3;
+  --rim-prism: 1;
+  --halo-prism: 0.3;
+  --spread-prism: 12px;
+  --sheen-dappled: 0.28;
+  --rim-dappled: 0.3;
+  --halo-dappled: 0.14;
+  --spread-dappled: 22px;
+  --font-display: Fraunces, Georgia, serif;
+  --font-sans: Outfit, system-ui, -apple-system, sans-serif;
+}

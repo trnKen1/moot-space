@@ -1,0 +1,345 @@
+/*
+ * moot.space component classes (ms-*) and the prism light model.
+ * Copied from the design system's components/bundle.css:
+ * https://claude.ai/artifact/ANJ5xn1qUzkpfmwHYJtsr9
+ * Fonts load from index.html. Mirror any change here back into the design system.
+ */
+
+/* moot.space — component styles. Every value comes from tokens.css; this file only composes them. */
+
+/* ------------------------------------------------------------------
+   1. The light model
+   A finish sets plain numbers on any ancestor (data-finish="…").
+   Surfaces read them and build four layers of prism light:
+     sheen  — specular highlight, split into channels (band, soft, diag, dapple, iris)
+     rim    — a 1px spectral edge (conic prism gradient, masked to a ring)
+     halo   — coloured dispersion shadows, blurred by spread
+     grain  — matte texture
+   Numbers inherit, so finishes nest correctly.
+   ------------------------------------------------------------------ */
+:root,
+[data-finish="satin"] {
+  --sf-band: 0; --sf-soft: var(--sheen-satin); --sf-diag: 0; --sf-dapple: 0; --sf-iris: 0;
+  --sf-rim: var(--rim-satin); --sf-halo: var(--halo-satin); --sf-spread: var(--spread-satin);
+  --sf-grain: 0; --sf-opacity: 1; --sf-blur: 0px; --sf-inner: 0.5; --sf-rim-w: 1px;
+}
+[data-finish="matte"] {
+  --sf-band: 0; --sf-soft: var(--sheen-matte); --sf-diag: 0; --sf-dapple: 0; --sf-iris: 0;
+  --sf-rim: var(--rim-matte); --sf-halo: var(--halo-matte); --sf-spread: var(--spread-matte);
+  --sf-grain: var(--grain-matte); --sf-opacity: 1; --sf-blur: 0px; --sf-inner: 0; --sf-rim-w: 1px;
+}
+[data-finish="glossy"] {
+  --sf-band: var(--sheen-glossy); --sf-soft: 0; --sf-diag: 0; --sf-dapple: 0; --sf-iris: 0;
+  --sf-rim: var(--rim-glossy); --sf-halo: var(--halo-glossy); --sf-spread: var(--spread-glossy);
+  --sf-grain: 0; --sf-opacity: 1; --sf-blur: 0px; --sf-inner: 1; --sf-rim-w: 1.5px;
+}
+[data-finish="frosted"] {
+  --sf-band: 0; --sf-soft: 0; --sf-diag: var(--sheen-frosted); --sf-dapple: 0; --sf-iris: 0;
+  --sf-rim: var(--rim-frosted); --sf-halo: var(--halo-frosted); --sf-spread: var(--spread-frosted);
+  --sf-grain: 0; --sf-opacity: 0.62; --sf-blur: var(--frost-blur); --sf-inner: 0.7; --sf-rim-w: 1px;
+}
+[data-finish="prism"] {
+  --sf-band: 0; --sf-soft: var(--sheen-prism); --sf-diag: 0; --sf-dapple: 0; --sf-iris: 0.24;
+  --sf-rim: var(--rim-prism); --sf-halo: var(--halo-prism); --sf-spread: var(--spread-prism);
+  --sf-grain: 0; --sf-opacity: 1; --sf-blur: 0px; --sf-inner: 0.6; --sf-rim-w: 2px;
+}
+[data-finish="dappled"] {
+  --sf-band: 0; --sf-soft: 0; --sf-diag: 0; --sf-dapple: var(--sheen-dappled); --sf-iris: 0;
+  --sf-rim: var(--rim-dappled); --sf-halo: var(--halo-dappled); --sf-spread: var(--spread-dappled);
+  --sf-grain: 0; --sf-opacity: 1; --sf-blur: 0px; --sf-inner: 0.3; --sf-rim-w: 1px;
+}
+
+/* Anything lit: surfaces, primary buttons, sent bubbles, avatar fallbacks, the logo mark. */
+.ms-surface,
+.ms-lit {
+  --ms-base: var(--surface);
+  position: relative;
+  isolation: isolate;
+  background-color: var(--ms-base);
+  background-image:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--highlight) calc(var(--sf-band) * 100%), transparent) 0%,
+      color-mix(in srgb, var(--highlight) calc(var(--sf-band) * 40%), transparent) 46%,
+      transparent 47%,
+      color-mix(in srgb, var(--fern-800) calc(var(--sf-band) * 12%), transparent) 100%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--highlight) calc(var(--sf-soft) * 100%), transparent) 0%,
+      transparent 62%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--highlight) calc(var(--sf-diag) * 100%), transparent) 0%,
+      transparent 55%),
+    radial-gradient(circle at 16% 18%, color-mix(in srgb, var(--prism-sun) calc(var(--sf-dapple) * 90%), transparent) 0 5%, transparent 18%),
+    radial-gradient(circle at 76% 12%, color-mix(in srgb, var(--prism-sun) calc(var(--sf-dapple) * 70%), transparent) 0 3%, transparent 12%),
+    radial-gradient(circle at 44% 64%, color-mix(in srgb, var(--prism-leaf) calc(var(--sf-dapple) * 50%), transparent) 0 4%, transparent 16%),
+    radial-gradient(ellipse 50% 40% at 70% 90%, color-mix(in srgb, var(--prism-sun) calc(var(--sf-dapple) * 45%), transparent), transparent 70%),
+    linear-gradient(115deg, transparent 18%,
+      color-mix(in srgb, var(--prism-sun) calc(var(--sf-iris) * 100%), transparent) 30%,
+      color-mix(in srgb, var(--prism-leaf) calc(var(--sf-iris) * 100%), transparent) 39%,
+      color-mix(in srgb, var(--prism-dew) calc(var(--sf-iris) * 100%), transparent) 48%,
+      color-mix(in srgb, var(--prism-sky) calc(var(--sf-iris) * 100%), transparent) 57%,
+      color-mix(in srgb, var(--prism-bloom) calc(var(--sf-iris) * 100%), transparent) 66%,
+      transparent 78%);
+}
+.ms-surface {
+  background-color: color-mix(in srgb, var(--ms-base) calc(var(--sf-opacity) * 100%), transparent);
+  -webkit-backdrop-filter: blur(var(--sf-blur)) saturate(1.3);
+  backdrop-filter: blur(var(--sf-blur)) saturate(1.3);
+  color: var(--ink);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    var(--shadow-soft),
+    calc(var(--sf-spread) * -0.4) calc(var(--sf-spread) * -0.15) var(--sf-spread) calc(var(--sf-spread) * -0.45)
+      color-mix(in srgb, var(--prism-sky) calc(var(--sf-halo) * 100%), transparent),
+    calc(var(--sf-spread) * 0.4) calc(var(--sf-spread) * 0.35) var(--sf-spread) calc(var(--sf-spread) * -0.45)
+      color-mix(in srgb, var(--prism-sun) calc(var(--sf-halo) * 100%), transparent),
+    0 calc(var(--sf-spread) * 0.55) calc(var(--sf-spread) * 1.2) calc(var(--sf-spread) * -0.55)
+      color-mix(in srgb, var(--prism-leaf) calc(var(--sf-halo) * 100%), transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--highlight) calc(var(--sf-inner) * 70%), transparent);
+}
+.ms-surface--lifted { box-shadow: var(--shadow-lifted), inset 0 1px 0 color-mix(in srgb, var(--highlight) calc(var(--sf-inner) * 70%), transparent); }
+
+/* Prism rim: a conic spectrum masked to a 1px ring. */
+.ms-surface::before,
+.ms-rim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: var(--sf-rim-w, 1px);
+  background: conic-gradient(from 210deg,
+    var(--prism-sun), var(--prism-leaf), var(--prism-dew), var(--prism-sky), var(--prism-bloom), var(--prism-sun));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: var(--sf-rim);
+  pointer-events: none;
+}
+/* Matte grain. */
+.ms-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+  opacity: var(--sf-grain);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------
+   2. Base
+   ------------------------------------------------------------------ */
+.ms-app { background: var(--ground); color: var(--ink); font-family: var(--font-sans); font-size: 15px; line-height: 22px; -webkit-font-smoothing: antialiased; }
+.ms-app *, .ms-app *::before, .ms-app *::after { box-sizing: border-box; }
+.ms-display { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.015em; }
+.ms-muted { color: var(--ink-muted); }
+.ms-subtle { color: var(--ink-subtle); }
+.ms-icon { width: 20px; height: 20px; flex: none; }
+.ms-row { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.ms-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.ms-app :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* Placeholder content: stands in for user text and media until real data lands. */
+.ms-ph { display: block; height: 10px; width: var(--w, 100%); border-radius: var(--radius-pill); background: var(--line); }
+.ms-ph--lg { height: 14px; }
+.ms-ph--block { height: var(--h, 120px); border-radius: var(--radius-md); }
+.ms-ph--circle { width: var(--d, 40px); height: var(--d, 40px); border-radius: var(--radius-pill); flex: none; }
+.ms-ph-lines { display: flex; flex-direction: column; gap: var(--space-2); }
+
+/* ------------------------------------------------------------------
+   3. Primitives
+   ------------------------------------------------------------------ */
+.ms-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: 40px; padding: 0 var(--space-4);
+  border: 1px solid transparent; border-radius: var(--radius-md);
+  font: 600 13px/18px var(--font-sans); letter-spacing: 0.02em;
+  color: var(--ink); cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.ms-btn:where(:not(.ms-lit)) { background: transparent; }
+.ms-btn:active { transform: translateY(1px); }
+.ms-btn--primary { --ms-base: var(--brand); color: var(--on-brand); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--highlight) calc(var(--sf-inner) * 45%), transparent), var(--shadow-soft); }
+.ms-btn--primary:hover { --ms-base: var(--brand-strong); }
+.ms-btn--secondary { background: var(--surface-raised); border-color: var(--line-strong); }
+.ms-btn--secondary:hover { background: var(--fern-50); }
+[data-theme="canopy"] .ms-btn--secondary:hover { background: var(--brand-soft); }
+.ms-btn--ghost { color: var(--ink-muted); }
+.ms-btn--ghost:hover { background: var(--surface-sunken); color: var(--ink); }
+.ms-btn--sm { height: 32px; padding: 0 var(--space-3); border-radius: var(--radius-sm); }
+.ms-btn--icon { width: 40px; padding: 0; }
+.ms-btn--block { width: 100%; }
+.ms-btn[disabled] { opacity: .55; cursor: not-allowed; }
+
+.ms-field { display: flex; flex-direction: column; gap: var(--space-1); }
+.ms-field > label { font: 600 13px/18px var(--font-sans); letter-spacing: 0.02em; color: var(--ink-muted); }
+.ms-input,
+.ms-input-group {
+  height: 44px; width: 100%;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink);
+  font: 400 15px/22px var(--font-sans);
+}
+.ms-input { padding: 0 var(--space-3); }
+.ms-input::placeholder { color: var(--ink-subtle); }
+.ms-input:focus { outline: 2px solid var(--focus); outline-offset: 1px; border-color: var(--focus); }
+.ms-input-group { display: flex; align-items: center; padding-left: var(--space-3); }
+.ms-input-group > span { color: var(--ink-subtle); }
+.ms-input-group > .ms-input { border: 0; height: 42px; padding-left: var(--space-1); background: transparent; }
+.ms-input-group:focus-within { outline: 2px solid var(--focus); outline-offset: 1px; border-color: var(--focus); }
+.ms-input-group > .ms-input:focus { outline: none; }
+.ms-field--error .ms-input { border-color: var(--danger); }
+.ms-field__hint { font: 500 12px/16px var(--font-sans); color: var(--ink-subtle); }
+.ms-field--error .ms-field__hint { color: var(--danger); }
+
+.ms-textarea {
+  width: 100%; min-height: 84px; resize: vertical;
+  padding: var(--space-3); border: 1px solid transparent; border-radius: var(--radius-md);
+  background: var(--surface-sunken); color: var(--ink); font: 400 17px/26px var(--font-sans);
+}
+.ms-textarea::placeholder { color: var(--ink-subtle); }
+.ms-textarea:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+.ms-tabs { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-pill); background: var(--surface-sunken); }
+.ms-tabs--block { display: flex; }
+.ms-tabs--block .ms-tab { flex: 1; }
+.ms-tab {
+  height: 34px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-pill);
+  background: transparent; color: var(--ink-muted); cursor: pointer;
+  font: 600 13px/18px var(--font-sans); letter-spacing: 0.02em;
+}
+.ms-tab:hover { color: var(--ink); }
+.ms-tab[aria-selected="true"] { background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-soft); }
+
+.ms-avatar {
+  --size: 40px;
+  --ms-base: var(--brand-soft);
+  width: var(--size); height: var(--size); flex: none;
+  display: inline-grid; place-items: center; overflow: hidden;
+  border-radius: var(--radius-pill);
+  color: var(--on-brand-soft); font: 600 calc(var(--size) * 0.4)/1 var(--font-sans);
+}
+.ms-avatar > img { width: 100%; height: 100%; object-fit: cover; }
+.ms-avatar--ring::before { padding: 2px; opacity: 1; }
+
+.ms-badge { display: inline-flex; align-items: center; gap: var(--space-1); height: 24px; padding: 0 var(--space-2); border-radius: var(--radius-pill); background: var(--brand-soft); color: var(--on-brand-soft); font: 600 12px/16px var(--font-sans); }
+.ms-badge--pollen { background: var(--pollen); color: var(--on-pollen); }
+.ms-dot { width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--pollen); flex: none; box-shadow: 0 0 0 2px var(--surface); }
+
+.ms-banner { display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-3); border-radius: var(--radius-sm); font: 400 15px/22px var(--font-sans); }
+.ms-banner--danger { background: var(--danger-soft); color: var(--danger); }
+
+/* Finish switcher: a segmented control that sets data-finish on a target. */
+.ms-finish-switch { display: inline-flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-pill); background: var(--surface-sunken); }
+.ms-finish-switch button {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  height: 32px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-pill);
+  background: transparent; color: var(--ink-muted); cursor: pointer;
+  font: 600 13px/18px var(--font-sans);
+}
+.ms-finish-switch button[aria-pressed="true"] { background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-soft); }
+.ms-finish-switch i { width: 12px; height: 12px; border-radius: var(--radius-pill); background: conic-gradient(var(--prism-sun), var(--prism-leaf), var(--prism-dew), var(--prism-sky), var(--prism-bloom), var(--prism-sun)); }
+
+/* ------------------------------------------------------------------
+   4. App placeholders (one per Vue component in apps/web)
+   ------------------------------------------------------------------ */
+.ms-wordmark { font: 600 22px/1 var(--font-display); letter-spacing: -0.02em; color: var(--ink); }
+.ms-wordmark b { display: inline-block; width: .3em; height: .3em; margin: 0 .04em; border-radius: var(--radius-pill); vertical-align: .05em; background: conic-gradient(from 210deg, var(--prism-sun), var(--prism-leaf), var(--prism-dew), var(--prism-sky), var(--prism-bloom), var(--prism-sun)); }
+.ms-logo-mark { --ms-base: var(--brand); width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: var(--radius-md) var(--radius-sm); color: var(--on-brand); font: 600 22px/1 var(--font-display); }
+
+/* Sidebar.vue */
+.ms-sidebar { display: flex; flex-direction: column; gap: var(--space-6); width: 260px; padding: var(--space-6) var(--space-4); }
+.ms-sidebar__logo { display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--space-2); }
+.ms-nav { display: flex; flex-direction: column; gap: var(--space-1); }
+.ms-nav__item { position: relative; display: flex; align-items: center; gap: var(--space-3); height: 44px; padding: 0 var(--space-3); border-radius: var(--radius-md); color: var(--ink-muted); font: 600 15px/22px var(--font-sans); text-decoration: none; }
+.ms-nav__item:hover { background: var(--surface-sunken); color: var(--ink); }
+.ms-nav__item[aria-current="page"] { background: var(--brand-soft); color: var(--on-brand-soft); }
+.ms-nav__item .ms-dot { margin-left: auto; }
+.ms-user-card { display: flex; align-items: center; gap: var(--space-3); margin-top: auto; padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.ms-user-card__meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.ms-user-card__name { font: 600 15px/22px var(--font-sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-user-card__handle { font: 500 12px/16px var(--font-sans); color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* AuthPage.vue */
+.ms-auth { width: 400px; max-width: 100%; padding: var(--space-8); display: flex; flex-direction: column; gap: var(--space-6); }
+.ms-auth__head { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); text-align: center; }
+.ms-auth__head h2 { margin: var(--space-2) 0 0; font: 600 36px/42px var(--font-display); letter-spacing: -0.015em; }
+.ms-auth__head p { margin: 0; color: var(--ink-muted); }
+
+/* HomeFeed.vue */
+.ms-feed-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.ms-feed-head h1 { margin: 0; font: 600 36px/42px var(--font-display); letter-spacing: -0.015em; }
+.ms-composer { display: flex; gap: var(--space-4); padding: var(--space-6); }
+.ms-composer__body { flex: 1; display: flex; flex-direction: column; gap: var(--space-3); }
+.ms-composer__actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3); }
+.ms-count { font: 500 12px/16px var(--font-sans); color: var(--ink-subtle); }
+.ms-count--limit { color: var(--on-pollen); background: var(--pollen); padding: 2px var(--space-2); border-radius: var(--radius-pill); }
+
+.ms-post { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6); }
+.ms-post__head { display: flex; align-items: center; gap: var(--space-3); }
+.ms-post__who { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2); }
+.ms-post__name { font: 600 15px/22px var(--font-sans); }
+.ms-post__meta { font: 500 12px/16px var(--font-sans); color: var(--ink-muted); }
+.ms-post__text { margin: 0; font: 400 17px/26px var(--font-sans); white-space: pre-wrap; overflow-wrap: anywhere; }
+.ms-post__actions { display: flex; gap: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--line); }
+.ms-action { display: inline-flex; align-items: center; gap: var(--space-2); height: 32px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--ink-muted); font: 500 13px/18px var(--font-sans); cursor: pointer; }
+.ms-action:hover { background: var(--surface-sunken); color: var(--ink); }
+.ms-action[aria-pressed="true"] { color: var(--brand); }
+.ms-action[aria-pressed="true"] svg { fill: currentColor; }
+
+.ms-widget { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+.ms-widget h2, .ms-widget h3 { margin: 0; font: 600 18px/26px var(--font-sans); }
+.ms-widget__row { display: flex; align-items: center; gap: var(--space-3); }
+.ms-widget__row + .ms-widget__row { padding-top: var(--space-3); border-top: 1px solid var(--line); }
+.ms-widget__grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ms-topic { font: 600 15px/22px var(--font-sans); color: var(--brand); }
+
+/* ChatRoom.vue */
+.ms-chat { display: grid; grid-template-columns: 280px 1fr; min-height: 420px; overflow: hidden; }
+.ms-threads { display: flex; flex-direction: column; border-right: 1px solid var(--line); }
+.ms-threads__head { padding: var(--space-6) var(--space-4) var(--space-3); }
+.ms-threads__head h1, .ms-threads__head h2 { margin: 0; font: 600 24px/30px var(--font-display); }
+.ms-thread { display: flex; align-items: center; gap: var(--space-3); width: calc(100% - 2 * var(--space-2)); padding: var(--space-3) var(--space-4); margin: 0 var(--space-2); border: 0; border-radius: var(--radius-md); background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.ms-thread:hover { background: var(--surface-sunken); }
+.ms-thread[aria-selected="true"], .ms-thread[aria-current="true"] { background: var(--brand-soft); }
+.ms-thread__name { font: 600 15px/22px var(--font-sans); }
+.ms-thread__preview { font: 400 13px/18px var(--font-sans); color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-thread__meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.ms-thread__top { display: flex; justify-content: space-between; gap: var(--space-2); }
+.ms-chat__main { display: flex; flex-direction: column; min-width: 0; }
+.ms-chat__head { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--line); }
+.ms-chat__status { display: flex; align-items: center; gap: var(--space-1); font: 500 12px/16px var(--font-sans); color: var(--ink-muted); }
+.ms-chat__status::before { content: ""; width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--fern-500); }
+.ms-chat__log { flex: 1; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
+.ms-bubble { max-width: 72%; padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); font: 400 15px/22px var(--font-sans); }
+.ms-bubble small { display: block; margin-top: var(--space-1); font: 500 12px/16px var(--font-sans); opacity: .8; }
+.ms-bubble--received { align-self: flex-start; background: var(--surface-raised); border: 1px solid var(--line); border-bottom-left-radius: var(--radius-sm); }
+.ms-bubble--received small { color: var(--ink-muted); opacity: 1; }
+.ms-bubble--sent { --ms-base: var(--brand); align-self: flex-end; color: var(--on-brand); border-bottom-right-radius: var(--radius-sm); }
+.ms-chat__bar { display: flex; gap: var(--space-2); padding: var(--space-4) var(--space-6); border-top: 1px solid var(--line); }
+.ms-chat__bar .ms-input { border-radius: var(--radius-pill); padding: 0 var(--space-4); }
+.ms-chat__bar .ms-btn--icon { border-radius: var(--radius-pill); height: 44px; width: 44px; }
+
+/* Empty states (ChatRoom.vue, UserProfile.vue) */
+.ms-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); padding: var(--space-12) var(--space-6); text-align: center; }
+.ms-empty__glyph { width: 64px; height: 64px; margin-bottom: var(--space-2); display: grid; place-items: center; border-radius: var(--radius-lg); color: var(--brand); }
+.ms-empty h3 { margin: 0; font: 600 24px/30px var(--font-display); }
+.ms-empty p { margin: 0; max-width: 32ch; color: var(--ink-muted); }
+
+/* UserProfile.vue */
+.ms-profile { overflow: hidden; }
+.ms-profile__banner { height: 132px; background:
+  radial-gradient(ellipse 60% 120% at 85% 0%, color-mix(in srgb, var(--prism-sun) 55%, transparent), transparent 60%),
+  radial-gradient(ellipse 50% 100% at 20% 100%, color-mix(in srgb, var(--prism-dew) 45%, transparent), transparent 70%),
+  var(--fern-600); }
+.ms-profile__body { padding: 0 var(--space-6) var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+.ms-profile__top { display: flex; align-items: flex-end; justify-content: space-between; margin-top: -40px; }
+.ms-profile__top .ms-avatar { box-shadow: 0 0 0 4px var(--surface); }
+.ms-profile__name { margin: 0; font: 600 28px/34px var(--font-display); letter-spacing: -0.01em; }
+.ms-stats { display: flex; gap: var(--space-6); padding-top: var(--space-3); border-top: 1px solid var(--line); }
+.ms-stat { display: flex; align-items: baseline; gap: var(--space-1); }
+.ms-stat b { font: 600 18px/26px var(--font-sans); }
+.ms-stat span { font: 500 12px/16px var(--font-sans); color: var(--ink-muted); }
