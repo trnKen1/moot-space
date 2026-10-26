@@ -82,38 +82,3 @@ button, input, textarea {
   border: 1px solid var(--border-glow);
 }
 
-/* Page transitions / layouts */
-.layout-container {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  min-height: 100vh;
-  max-width: 1400px;
-  margin: 0 auto;
-  position: relative;
-}
-
-@media (max-width: 900px) {
-  .layout-container {
-    grid-template-columns: 80px 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  .layout-container {
-    grid-template-columns: 1fr;
-    padding-bottom: 70px; /* Space for bottom nav */
-  }
-}
-
-.main-content {
-  padding: 2.5rem;
-  overflow-y: auto;
-  max-height: 100vh;
-}
-
-@media (max-width: 600px) {
-  .main-content {
-    padding: 1.5rem;
-    max-height: calc(100vh - 70px);
-  }
-}

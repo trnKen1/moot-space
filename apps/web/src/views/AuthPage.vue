@@ -144,7 +144,7 @@ export default {
     const handleLogin = async () => {
       const success = await authStore.login(loginEmail.value, loginPassword.value)
       if (success) {
-        router.push({ name: 'Feed' })
+        router.push({ name: 'Home' })
       }
     }
 
@@ -156,7 +156,7 @@ export default {
         signupPassword.value
       )
       if (success) {
-        router.push({ name: 'Feed' })
+        router.push({ name: 'Home' })
       }
     }
 
