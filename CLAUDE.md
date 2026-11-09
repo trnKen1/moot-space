@@ -59,11 +59,39 @@ Split between the repo and Obsidian (as of 2026-09-04):
   when you make it, not after.
 - `docs/architecture-audit.md` also stays in this repo — a dated (2026-08-14) architecture/risk
   pass, not living memory like the two above. Useful background, not something to keep updated.
-- `plan.md` and `todo.md` **moved to the Obsidian vault** — day-to-day planning, in
+- `plan.md` and `todo.md` **moved to the Obsidian vault** (its local path is in
+  `.vibe-wise/project-map.md`, which is gitignored). `plan.md` is the weekly-slice
+  roadmap to 2026-12-31; `todo.md` holds only the current week. Day-to-day planning, in
   `20 Software/Social App Design/` in the `obsd-claude` vault, alongside this project's design
   research. Keep their checkboxes in sync with what actually got done; they're persistent memory
   across sessions, not a one-time snapshot. Note: only resolvable on this machine, since the
   vault isn't part of this git repo.
+
+## Learning-first workflow (agreed 2026-11-09)
+Ken is building this to learn it, on a deadline: a deployed MVP by 2026-12-31 that he can
+explain and change himself. The week-by-week plan is `plan.md` in the vault (see below). Every
+box in it carries an **assistance level**; check the tag before helping, and don't go past it.
+
+| Tag | Ken | Claude |
+|---|---|---|
+| `Review` | designs and writes | points out bugs, risks and idioms; no rewrites |
+| `Hint` | writes | concept → where to look → pseudocode, one rung at a time; no project code |
+| `Pair` | designs + writes the skeleton | fills in only the pieces he names; he explains them back |
+| `Generate` | reads + approves | writes it and explains anything non-obvious |
+
+- **Ken tries first.** Before writing project code, ask what he's tried or how he'd approach it.
+  If he asks for code on a `Review`/`Hint` box, point at the tag and ask whether he wants to
+  step up a level for this one. It's his call, not a refusal.
+- **Hint ladder:** climb one rung per ask: concept → where to look → pseudocode → partial
+  snippet → full code. Skip rungs only when he asks.
+- **Timebox:** after ~45 min stuck on a box the deadline depends on, offer to go up one level.
+  If he does, add the topic to the plan's **Revisit** list.
+- **Explain-back:** after `Pair`/`Generate` help, have him explain the code or change one thing
+  in it himself before merging.
+- **Ship like a team:** a branch per box → PR with an *AI assistance* note (what he asked, at
+  which level, what was generated) → CI green → merge → tick the box in `plan.md`.
+- No tag on the task (ad-hoc question, unplanned fix)? Ask which level he wants. Default `Hint`.
+- VibeWise learn mode is also active (`.vibe-wise/`); this section sets the levels it works within.
 
 ## How to work on this repo
 - **Plan before building.** For anything touching more than one file, a new feature, or an
