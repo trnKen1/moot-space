@@ -153,3 +153,22 @@ so builds don't depend on the artifact being reachable.
 **Consequence:** a token or `ms-*` change is made in the design system first, then copied into
 `src/styles/` (both files say so in their header). The views were migrated behind a temporary
 alias block that mapped the old variable names onto the new tokens, removed once no view used it.
+
+## 2026-11-09 — Plan by weekly vertical slices to a 2026-12-31 MVP, learning-first
+**Decision:** The phase-based plan (scaffold → frontend demo → backend decisions → unscoped) is
+replaced by a dated roadmap in the vault's `plan.md`: Week 1 makes the open product decisions
+and gets a live deploy, Weeks 2–6 each ship one vertical slice (profiles → posting an image →
+home on real data → real-time conversation → polish), Week 7 is buffer and launch. Every task is
+tagged with an AI-assistance level (`Review` / `Hint` / `Pair` / `Generate`), defined in
+`CLAUDE.md`.
+**Why:** The old plan had no dates, and its order was by layer (all design, then auth, then
+messaging, then database, then hosting), so nothing would work end to end until the end, and
+the product direction kept changing because no step forced a choice. Slices keep a shippable
+app at every point before the deadline: if time runs out, the last slice is dropped rather than
+half of every layer. The assistance tags exist because the project is also how Ken learns this
+stack: he writes the parts he needs to own, and generated code is limited to boilerplate.
+**Consequence:** a cut-line review at the end of Week 3. Native mobile, a draggable canvas
+gallery and Django endpoints are parked unless a later decision pulls them in. The Week 5
+spike decides between Supabase Realtime and Django Channels, which also answers the chat-delivery
+question in `architecture.md`.
+**Supersedes:** the phase structure in the pre-2026-11-09 `plan.md` (no earlier entry here).
